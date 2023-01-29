@@ -1,0 +1,278 @@
+<!--BUGS: parameter count 'paramcount' is disputed while deleting and adding at line 177-178 -->
+<!--BUGS: parameter count 'paramcount' is disputed while running the forloop for taking the values for the adde d parameter boxes exactly at line 201 -->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+  <title>PostmanClone</title>
+</head>
+
+<body class="b">
+  <!-- navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">PostMaster</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Contact Us</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mx-5 ">
+    <h1 class="my-3 text-center">Welcome to PostMaster: </h1>
+    <div class="container">
+      <div class="form-group row my-3">
+        <!-- url box -->
+        <label for="url" class="col-sm-2 col-form-label">URL link:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="url">
+        </div>
+        <!-- requesttype box -->
+        <fieldset class="form-group row my-3">
+          <legend class="col-sm-2 col-form-label ">Request Type: </legend>
+          <div class="col-sm-10">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="radio" role="switch" id="get" name="typerequest" value="get">
+              <label class="form-check-label" for="get">GET REQUEST</label>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="radio" role="switch" id="post" name="typerequest" value="post">
+              <label class="form-check-label" for="post">POST REQUEST</label>
+            </div>
+        </fieldset>
+        <!-- contenttype box -->
+        <fieldset class="form-group row my-3">
+          <legend class="col-sm-2 col-form-label ">Content Type: </legend>
+          <div class="col-sm-10">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="radio" role="switch" id="jsonradio" name="typecontent" value="json">
+              <label class="form-check-label" for="jsonradio">JSON</label>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="radio" role="switch" id="paramsradio" name="typecontent"
+                value="params">
+              <label class="form-check-label" for="paramsradio">Custom Parameters</label>
+            </div>
+        </fieldset>
+      </div>
+
+      <!-- Parameters box- This will hide on clicking json option in content type  -->
+      <div id="parametersbox">
+        <div class="row">
+          <label for="urlfield" class="col-sm-2 col-form-label">Parameter 1: </label>
+          <div class="col-md-4">
+            <input type="text" class="form-control" id="parameterkey1" placeholder="enter parameter 1 key">
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control" id="parametervalue1" placeholder="enter parameter 1 value">
+          </div>
+          <button class="btn btn-dark col-1" id="addparameters">+</button>
+        </div>
+        <div id="addedparameters"></div>
+      </div>
+      <!--  box- This will hide on clicking json option in content type  -->
+      <div class="my-3" id="requestjsonbox">
+        <div class="form-group row my-3">
+          <label for="requestjsontext" class="col-sm-2 col-form-label">Enter Request Json:</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="requestjsontext" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      <!-- button to fetch api -->
+      <div class="form-group row my-3">
+        <div class="col-sm-10">
+          <button class="btn btn-dark" id="submit">Submit</button>
+        </div>
+      </div>
+      <!-- response area -->
+      <div class="my-3" id="responsejsonbox">
+        <div class="form-group row my-3">
+          <label for="responsetjsontext" class="col-sm-2 col-form-label">Response: </label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="responsetjsontext" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Javascript infuison  -->
+  <script>
+
+    // OPERATING ON THE REQUEST BOXES:
+
+    let parametersbox = document.getElementById('parametersbox');
+    //  Initially hiding the parametersbox while starting
+    parametersbox.style.display = 'none';
+    let requestjsonbox = document.getElementById('requestjsonbox');
+    //  Initially hiding the requestjsonbox while starting
+    requestjsonbox.style.display = 'none';
+    let jsonradio = document.getElementById('jsonradio');
+    let paramsradio = document.getElementById('paramsradio');
+    // if the user clicks parametersbox then hide jsonradio
+    paramsradio.addEventListener('click', () => {
+      parametersbox.style.display = 'block';
+      requestjsonbox.style.display = 'none';
+    })
+    // if the user clicks jsonradio then hide parametersbox
+    jsonradio.addEventListener('click', () => {
+      parametersbox.style.display = 'none';
+      requestjsonbox.style.display = 'block';
+
+    })
+
+    // OPERATING ON THE PARAMETERSBOX 
+    // adding parametersbox : if the user clicks on the '+' button then parameters box gets added up
+    //  to convert a string into an element
+    function getelementfromstring(string) {
+      let div = document.createElement('div');
+      div.innerHTML = string;
+      // console.log(div)
+      // console.log( div.firstElementChild)
+      return div.firstElementChild;
+    }
+    let paramcount = 1;
+    let addparameters = document.getElementById('addparameters');
+    addparameters.addEventListener('click', () => {
+      let string = ` <div class="row my-3">
+        <label for="urlfield" class="col-sm-2 col-form-label">Parameter ${paramcount + 1}: </label>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="parameterkey${paramcount + 1}"  placeholder="enter parameter ${paramcount + 1} key">
+          </div>
+                          <div class="col-md-4">
+                            <input type="text" class="form-control" id="parametervalue1" placeholder="enter parameter ${paramcount + 1} value">
+                            </div>
+                            <button class="btn btn-dark col-1" id="removeparameters" onclick="removeparameters(this)">-</button>
+                            </div>`
+      let addedparameters = document.getElementById('addedparameters')
+      console.log(addedparameters)
+      let getelement = getelementfromstring(string);
+      console.log(getelement)
+      addedparameters.appendChild(getelement)
+      paramcount++;
+    })
+    //  removing the parameterboxes
+    // let removeparameters = document.getElementById('removeparameters')
+    function removeparameters(e) {
+      alert(`Do you really want to delete the " Parameter " ?`)
+      e.parentElement.remove()
+    }
+
+
+    // if user clicks on the submit button:
+    let submit = document.getElementById('submit')
+    submit.addEventListener('click', () => {
+      // Show 'please wait' in the response area box to request patience from the user as the post URL takes time to revert back at times:
+      let responsetjsontext = document.getElementById('responsetjsontext')
+      responsetjsontext.value = "Please wait...Fetching response"
+      // fetching all the values user has entered: 
+      let url = document.getElementById('url').value;
+      let typerequest = document.querySelector("input[name='typerequest']:checked").value;
+      let typecontent = document.querySelector("input[name='typecontent']:checked").value;
+
+      // if user clicks custom parameters
+      let data = {}
+      if (typecontent == 'params') {
+        for (i = 0; i < paramcount; i++) {
+          if (document.getElementById('parameterkey' + (i + 1)) != undefined) {
+            let key = document.getElementById('parameterkey' + (i + 1)).value;
+            let value = document.getElementById('parametervalue' + (i + 1)).value;
+            data[key] = value;
+          }
+        }
+        JSON.stringify(data)
+      }
+      else {
+        // this gives the data as string
+        data = document.getElementById('requestjsontext').value;
+
+      }
+
+      console.log('content type is : ', typecontent)
+      console.log('request type is : ', typerequest)
+      console.log('url is : ', url)
+      console.log('Data is : ', data)
+      typeof (data)
+
+      // if the request type is get then invoke the fetch api to create a get request
+      if (typerequest == 'get') {
+        fetch(url, {
+          method: 'GET'
+        })
+          .then((response) => {
+            return response.text();
+          })
+          .then((text) => {
+            responsetjsontext.value = text;
+          });
+      }
+
+      // if the request type is post then invoke the fetch api to create a post request
+      else {
+        fetch(url, {
+          method: 'POST',
+          // Not working
+          // body: data, 
+          // body: JSON.stringify(data),  
+          // working for a particular post request
+          body: JSON.stringify({
+            title: 'foo',
+            body: 'bar',
+            userId: 1,
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        })
+          .then((response) => {
+            return response.text();
+          })
+          .then((text) => {
+            responsetjsontext.value = text;
+          });
+      }
+    })
+
+
+
+
+
+
+  </script>
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+  <!--
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+      -->
+</body>
+
+</html>
